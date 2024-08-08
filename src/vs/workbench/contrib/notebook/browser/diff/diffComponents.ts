@@ -774,7 +774,7 @@ abstract class SingleSideDiffElement extends AbstractElementRenderer {
 	override readonly templateData: CellDiffSingleSideRenderTemplate;
 	abstract get nestedCellViewModel(): DiffNestedCellViewModel;
 	abstract get changedLabel(): string;
-	abstract get isEditable(): boolean;
+	abstract get readonly(): boolean;
 	constructor(
 		notebookEditor: INotebookTextDiffEditor,
 		cell: SingleSideDiffElementViewModel,
@@ -916,9 +916,7 @@ abstract class SingleSideDiffElement extends AbstractElementRenderer {
 					height: editorHeight
 				}
 			);
-			if (this.isEditable) {
-				this._editor.updateOptions({ readOnly: false });
-			}
+			this._editor.updateOptions({ readOnly: this.readonly });
 			this.cell.editorHeight = editorHeight;
 
 			this._register(this._editor.onDidContentSizeChange((e) => {
@@ -1096,7 +1094,7 @@ export class DeletedElement extends SingleSideDiffElement {
 	get changedLabel() {
 		return 'Input deleted';
 	}
-	get isEditable() {
+	get readonly() {
 		return true;
 	}
 
@@ -1229,8 +1227,8 @@ export class InsertElement extends SingleSideDiffElement {
 	get changedLabel() {
 		return 'Input inserted';
 	}
-	get isEditable() {
-		return true;
+	get readonly() {
+		return false;
 	}
 
 	styleContainer(container: HTMLElement): void {
